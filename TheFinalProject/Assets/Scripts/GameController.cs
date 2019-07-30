@@ -7,6 +7,16 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public GameObject[] hazards;
+
+    public GameObject background;
+    public GameObject starfield1;
+    public GameObject starfield2;
+    private ParticleSystem ps1;
+    private ParticleSystem ps2;
+    private BGScroller BGScroller;
+    public float warpSpeed;
+    public float starfieldSpeed;
+
     public Vector3 spawnValues;
     public int hazardCount;
     public float spawnWait;
@@ -34,6 +44,10 @@ public class GameController : MonoBehaviour
         Score = 0;
         UpdateScore();
         StartCoroutine (SpawnWaves());
+        BGScroller = background.GetComponent<BGScroller>();
+        ps1 = starfield1.GetComponent<ParticleSystem>();
+        ps2 = starfield2.GetComponent<ParticleSystem>();
+
     }
 
     void Update()
@@ -48,6 +62,16 @@ public class GameController : MonoBehaviour
             {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
+        }
+        if (gameWon)
+        {
+            float recoveryRate = 0.5f;
+            BGScroller.scrollSpeed = Mathf.MoveTowards(BGScroller.scrollSpeed, warpSpeed, recoveryRate * Time.deltaTime);
+            float starRate = 1.5f;
+            var main1 = ps1.main;
+            main1.simulationSpeed = Mathf.MoveTowards(main1.simulationSpeed, starfieldSpeed, starRate * Time.deltaTime);
+            var main2 = ps2.main;
+            main2.simulationSpeed = Mathf.MoveTowards(main2.simulationSpeed, starfieldSpeed, starRate * Time.deltaTime);
         }
     }
 
