@@ -22,13 +22,16 @@ public class GameController : MonoBehaviour
     public float spawnWait;
     public float startWait;
     public float waveWait;
+    public float hardModeWait;
     public int winScore;
 
     public Text scoreText;
     public Text restartText;
     public Text gameOverText;
     public Text devText;
+    public Text hardModeText;
 
+    private bool hardMode;
     private bool gameOver;
     private bool restart;
     private bool gameWon;
@@ -38,9 +41,11 @@ public class GameController : MonoBehaviour
     {
         gameOver = false;
         restart = false;
+        hardMode = false;
         restartText.text = "";
         gameOverText.text = "";
         devText.text = "";
+        hardModeText.text = "H for Hard Mode: DISABLED";
         Score = 0;
         UpdateScore();
         StartCoroutine (SpawnWaves());
@@ -55,6 +60,18 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
+        }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            hardMode = !hardMode;
+            if (hardMode)
+            {
+            hardModeText.text = "H for Hard Mode: ENABLED";
+            }
+            else
+            {
+            hardModeText.text = "H for Hard Mode: DISABLED";
+            }
         }
         if (restart)
         {
@@ -88,7 +105,14 @@ public class GameController : MonoBehaviour
                 Instantiate (hazard, spawnPosition, spawnRotation);
                 yield return new WaitForSeconds(spawnWait);
             }
+            if (hardMode)
+            {
+            yield return new WaitForSeconds(hardModeWait);    
+            }
+            else
+            {
             yield return new WaitForSeconds(waveWait);
+            }
 
             if(gameOver)
             {

@@ -18,15 +18,30 @@ public class PlayerController : MonoBehaviour
      public Transform shotSpawn;
      public float fireRate;
 
+     public bool isPoweredUp;
+     public bool isActive;
+
      private float nextFire;
      private AudioSource audioSource;
 
      private Rigidbody rb;
 
+     public IEnumerator WeaponsPowerUp()
+    {
+        fireRate -= 0.10f;
+        yield return new WaitForSeconds(5.0f);
+        fireRate += 0.10f; 
+        isPoweredUp = false;     
+        isActive = false;
+    }
+
+
      private void Start()
      {
           rb = GetComponent<Rigidbody>();
           audioSource = GetComponent<AudioSource>();
+          isActive = false;
+          isPoweredUp = false;
      }
 
      void Update ()
@@ -36,7 +51,13 @@ public class PlayerController : MonoBehaviour
                nextFire = Time.time + fireRate;
                GameObject clone = Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
                audioSource.Play();
-          }  
+          }
+          if (isPoweredUp == true && isActive == false)
+          {
+          StartCoroutine(WeaponsPowerUp());
+          isActive = true;
+          }
+
      }
 
      void FixedUpdate()
