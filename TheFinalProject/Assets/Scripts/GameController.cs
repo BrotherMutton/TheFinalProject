@@ -14,6 +14,11 @@ public class GameController : MonoBehaviour
     private ParticleSystem ps1;
     private ParticleSystem ps2;
     private BGScroller BGScroller;
+    
+    private AudioSource audioSource;
+    public AudioClip winMusic;
+    public AudioClip loseMusic;
+
     public float warpSpeed;
     public float starfieldSpeed;
 
@@ -52,6 +57,7 @@ public class GameController : MonoBehaviour
         BGScroller = background.GetComponent<BGScroller>();
         ps1 = starfield1.GetComponent<ParticleSystem>();
         ps2 = starfield2.GetComponent<ParticleSystem>();
+        audioSource = GetComponent<AudioSource>();
 
     }
 
@@ -132,7 +138,7 @@ public class GameController : MonoBehaviour
     void UpdateScore()
     {
         scoreText.text = "Points: " + Score;
-        if(Score >= winScore)
+        if(Score >= winScore && gameOver == false)
         {
             gameWon = true;
             GameOver();
@@ -143,10 +149,16 @@ public class GameController : MonoBehaviour
     {
         gameOverText.text = "Game over!";
         gameOver = true;
+        audioSource.clip = loseMusic;
+        audioSource.Play();
+        audioSource.loop = false;
         if (gameWon == true)
         {
             gameOverText.text = "You've won!";
             devText.text = "Game created by Matthew Wisner";
+            audioSource.clip = winMusic;
+            audioSource.Play();
+            audioSource.loop = false;
         }
     }
 }
